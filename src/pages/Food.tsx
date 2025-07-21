@@ -1,23 +1,24 @@
-import { Card, Flex, Table } from "@chakra-ui/react"
+import { api } from "@/utils/api"
+import { Card, Flex, HStack, Skeleton, SkeletonCircle, SkeletonText, Stack, Table } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 
+interface FoodInterface {
+  row_number: number
+  Nome: string
+  Proteínas: number
+  Gorduras: number
+  Carboidratos: number
+  Fibras: number
+  Calorias: number
+
+}
 export function Food() {
-  const [foods, setFoods] = useState<[{
-    row_number: number
-    Nome: string
-    Proteínas: number
-    Gorduras: number
-    Carboidratos: number
-    Fibras: number
-    Calorias: number
 
-  }]>()
+  const { data, isLoading } = api('alimentos')
 
-  useEffect(() => {
-    fetch('https://n8n.dizelequefez.com.br/webhook/alimentos')
-      .then((response) => response.json())
-      .then((data) => setFoods(data))
-  }, [])
+  if (isLoading) {
+    return <SkeletonText noOfLines={3} gap="4" />
+  }
 
   return (
 
@@ -40,7 +41,7 @@ export function Food() {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {foods?.map(food => (
+            {data?.map((food: FoodInterface) => (
               <Table.Row key={food.row_number}>
                 <Table.Cell>{food.row_number - 1}</Table.Cell>
                 <Table.Cell>{food.Nome}</Table.Cell>

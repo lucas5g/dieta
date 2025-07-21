@@ -1,5 +1,6 @@
 import { FoodCard } from "@/components/FoodCard";
-import { Card, Stack, Table } from "@chakra-ui/react";
+import { api } from "@/utils/api";
+import { Card, SkeletonText, Stack, Table } from "@chakra-ui/react";
 import { use, useEffect, useState } from "react";
 
 export interface MealInterface {
@@ -13,39 +14,41 @@ export interface MealInterface {
   Calorias: number
 }
 
+
 export function Meal() {
 
-  const [meals, setMeals] = useState<MealInterface[]>()
+  const { data, isLoading }: {
+    data: MealInterface[],
+    isLoading: boolean
+  } = api('refeicoes')
 
-  useEffect(() => {
-    fetch('https://n8n.dizelequefez.com.br/webhook/refeicoes')
-      .then((response) => response.json())
-      .then((data) => setMeals(data))
-  }, [])
+  if (isLoading) {
+    return <SkeletonText noOfLines={3} gap="4" />
+  }
 
   return (
     <Stack
       gap={5}
       width={'100%'}
-      >
+    >
       <FoodCard
         name={'café da manhã'}
-        meals={meals}
+        meals={data}
 
       />
       <FoodCard
         name={'almoço'}
-        meals={meals}
+        meals={data}
       />
 
       <FoodCard
         name={'lanche'}
-        meals={meals}
+        meals={data}
       />
 
       <FoodCard
         name={'jantar'}
-        meals={meals}
+        meals={data}
       />
 
     </Stack>

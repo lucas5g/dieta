@@ -1,7 +1,8 @@
 import type { MealInterface } from "@/pages/Meal";
-import { Card, Table } from "@chakra-ui/react";
+import { Button, Card, Flex, Stack, Table, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-
+import { Plus } from 'lucide-react'
+import { FoodForm } from "@/components/FoodForm";
 interface Props {
   name: 'café da manhã' | 'almoço' | 'lanche' | 'jantar',
   meals: MealInterface[] | undefined
@@ -29,10 +30,11 @@ export function FoodCard({ name, meals }: Readonly<Props>) {
       <Card.Header>
         <Card.Title>
           {upperFirstLetter(name)}
+
         </Card.Title>
+
       </Card.Header>
-      <Card.Body overflowX={"auto"}>
-        {list.length === 0 && <p>Sem refeição</p>}
+      <Card.Body overflowX={"auto"} gap={2}>
 
         {list.length > 0 &&
 
@@ -63,7 +65,20 @@ export function FoodCard({ name, meals }: Readonly<Props>) {
             </Table.Body>
           </Table.Root>
         }
+        <Flex
+          gap={2}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+
+          {list.length === 0
+            ? <Text color={'fg.muted'}>Sem refeição</Text>
+            : <span></span>
+          }
+
+          <FoodForm />
+        </Flex>
       </Card.Body>
-    </Card.Root>
+    </Card.Root >
   )
 }
