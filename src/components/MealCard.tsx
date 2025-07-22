@@ -1,14 +1,12 @@
 import type { MealInterface } from "@/pages/Meal";
 import { Button, Card, Flex, Stack, Table, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Plus } from 'lucide-react'
-import { FoodForm } from "@/components/FoodForm";
 interface Props {
   name: 'café da manhã' | 'almoço' | 'lanche' | 'jantar',
   meals: MealInterface[] | undefined
 }
 
-export function FoodCard({ name, meals }: Readonly<Props>) {
+export function MealCard({ name, meals }: Readonly<Props>) {
 
   const [list, setList] = useState<MealInterface[]>([])
 
@@ -65,19 +63,11 @@ export function FoodCard({ name, meals }: Readonly<Props>) {
             </Table.Body>
           </Table.Root>
         }
-        <Flex
-          gap={2}
-          justifyContent={'space-between'}
-          alignItems={'center'}
-        >
 
-          {list.length === 0
-            ? <Text color={'fg.muted'}>Sem refeição</Text>
-            : <span></span>
-          }
-
-          <FoodForm />
-        </Flex>
+        {list.length === 0
+          ? <Text color={'fg.muted'}>Sem refeição</Text>
+          : <span></span>
+        }
       </Card.Body>
     </Card.Root >
   )

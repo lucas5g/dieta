@@ -1,9 +1,10 @@
-import { Button, createListCollection, Dialog, Field, Input, NativeSelect, Portal, Select } from "@chakra-ui/react";
+import { api } from "@/utils/api";
+import { Button, createListCollection, Dialog, Field, Flex, Input, NativeSelect, Portal, Select, Stack } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
 
 
 
-export function FoodForm() {
+export function MealForm() {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -27,9 +28,18 @@ export function FoodForm() {
               </Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
-              <SelectMeal />
-              <Input placeholder="Quantidade" />
-              <Input placeholder="Alimento" />
+              <Stack>
+                <SelectMeal />
+                <SelectFood />
+                <Field.Root>
+                  <Field.Label>
+                    Quantidade
+                  </Field.Label>
+                  <Input placeholder="Quantidade" />
+                </ Field.Root>
+
+
+              </Stack>
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.ActionTrigger asChild>
@@ -45,6 +55,33 @@ export function FoodForm() {
   )
 }
 
+function SelectFood() {
+
+  const { data, isLoading } = api('alimentos')
+
+  if(isLoading) {
+    return <></>
+  }
+
+  console.log(data)
+
+  return (
+   <Field.Root>
+      <Field.Label>
+        Alimento
+      </Field.Label>
+      <NativeSelect.Field>
+        {data?.map((food:any) => (
+          <option
+            key={food.row_number}
+            value={food.Nome}>
+            {food.Nome}
+          </option>
+        ))}
+      </NativeSelect.Field>
+    </Field.Root>
+  )
+}
 
 function SelectMeal() {
   const meals = [

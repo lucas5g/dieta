@@ -1,6 +1,7 @@
-import { FoodCard } from "@/components/FoodCard";
+import { MealCard } from "@/components/MealCard";
+import { MealForm } from "@/components/MealForm";
 import { api } from "@/utils/api";
-import { Card, SkeletonText, Stack, Table } from "@chakra-ui/react";
+import { Card, Float, SkeletonText, Stack, Table } from "@chakra-ui/react";
 import { use, useEffect, useState } from "react";
 
 export interface MealInterface {
@@ -31,26 +32,33 @@ export function Meal() {
       gap={5}
       width={'100%'}
     >
-      <FoodCard
+      <MealCard
         name={'café da manhã'}
         meals={data}
 
       />
-      <FoodCard
+      <MealCard
         name={'almoço'}
         meals={data}
       />
 
-      <FoodCard
+      <MealCard
         name={'lanche'}
         meals={data}
       />
 
-      <FoodCard
+      <MealCard
         name={'jantar'}
         meals={data}
       />
-
+    
+      <Float 
+        
+        offsetX={14}
+        offsetY={800}        
+        >
+        <MealForm />
+      </Float>
     </Stack>
 
   )
