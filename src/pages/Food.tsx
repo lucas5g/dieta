@@ -2,8 +2,8 @@ import { api } from "@/utils/api"
 import { Card, Flex, HStack, Skeleton, SkeletonCircle, SkeletonText, Stack, Table } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 
-interface FoodInterface {
-  row_number: number
+export interface FoodInterface {
+  'Nº': number
   Nome: string
   Proteínas: number
   Gorduras: number
@@ -42,8 +42,8 @@ export function Food() {
           </Table.Header>
           <Table.Body>
             {data?.map((food: FoodInterface) => (
-              <Table.Row key={food.row_number}>
-                <Table.Cell>{food.row_number - 1}</Table.Cell>
+              <Table.Row key={food['Nº']}>
+                <Table.Cell>{food['Nº']}</Table.Cell>
                 <Table.Cell>{food.Nome}</Table.Cell>
                 <Table.Cell>{food['Proteínas'] || 0} </Table.Cell>
                 <Table.Cell>{food['Gorduras'] || 0}</Table.Cell>

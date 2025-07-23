@@ -6,8 +6,9 @@ st.title("Alimentos")
 
 foods = requests.get("https://n8n.dizelequefez.com.br/webhook/alimentos").json()
 
+
 foodEdited = st.data_editor(
-  foods,
+  foods['café da manhã'],
   column_config={
     # "row_number": st.column_config.NumberColumn(
     #   'Nº',

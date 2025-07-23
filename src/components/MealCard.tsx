@@ -21,6 +21,9 @@ export function MealCard({ name, meals }: Readonly<Props>) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  if(list.length === 0){ 
+    return <></>
+  }
   // console.log(list)
 
   return (
@@ -33,41 +36,32 @@ export function MealCard({ name, meals }: Readonly<Props>) {
 
       </Card.Header>
       <Card.Body overflowX={"auto"} gap={2}>
-
-        {list.length > 0 &&
-
-          <Table.Root>
-            <Table.Header>
-              <Table.Row>
-                <Table.ColumnHeader>N°</Table.ColumnHeader>
-                <Table.ColumnHeader>QTD</Table.ColumnHeader>
-                <Table.ColumnHeader>Alimento</Table.ColumnHeader>
-                <Table.ColumnHeader>Proteínas</Table.ColumnHeader>
-                <Table.ColumnHeader>Gorduras</Table.ColumnHeader>
-                <Table.ColumnHeader>Carboidratos</Table.ColumnHeader>
-                <Table.ColumnHeader>Calorias</Table.ColumnHeader>
+        <Table.Root>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader>N°</Table.ColumnHeader>
+              <Table.ColumnHeader>QTD</Table.ColumnHeader>
+              <Table.ColumnHeader>Alimento</Table.ColumnHeader>
+              <Table.ColumnHeader>Proteínas</Table.ColumnHeader>
+              <Table.ColumnHeader>Gorduras</Table.ColumnHeader>
+              <Table.ColumnHeader>Carboidratos</Table.ColumnHeader>
+              <Table.ColumnHeader>Calorias</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {list.map((meal) => (
+              <Table.Row key={meal.row_number}>
+                <Table.Cell>{meal.row_number - 1}</Table.Cell>
+                <Table.Cell>{meal.Quantidade}</Table.Cell>
+                <Table.Cell>{meal.Alimento}</Table.Cell>
+                <Table.Cell>{meal.Proteínas}</Table.Cell>
+                <Table.Cell>{meal.Gorduras}</Table.Cell>
+                <Table.Cell>{meal.Carboidratos}</Table.Cell>
+                <Table.Cell>{meal.Calorias}</Table.Cell>
               </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {list.map((meal) => (
-                <Table.Row key={meal.row_number}>
-                  <Table.Cell>{meal.row_number - 1}</Table.Cell>
-                  <Table.Cell>{meal.Quantidade}</Table.Cell>
-                  <Table.Cell>{meal.Alimento}</Table.Cell>
-                  <Table.Cell>{meal.Proteínas}</Table.Cell>
-                  <Table.Cell>{meal.Gorduras}</Table.Cell>
-                  <Table.Cell>{meal.Carboidratos}</Table.Cell>
-                  <Table.Cell>{meal.Calorias}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table.Root>
-        }
-
-        {list.length === 0
-          ? <Text color={'fg.muted'}>Sem refeição</Text>
-          : <span></span>
-        }
+            ))}
+          </Table.Body>
+        </Table.Root>
       </Card.Body>
     </Card.Root >
   )

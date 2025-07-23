@@ -52,13 +52,13 @@ export function Meal() {
         meals={data}
       />
     
-      <Float 
+      {/* <Float 
         
         offsetX={14}
         offsetY={800}        
-        >
+        > */}
         <MealForm />
-      </Float>
+      {/* </Float> */}
     </Stack>
 
   )
