@@ -15,17 +15,31 @@ export interface MealInterface {
   Calorias: number
 }
 
+type MealEnum = 'café da manhã' | 'almoço' | 'lanche' | 'jantar'
+
+interface MealRecordInterface extends Record<MealEnum, MealInterface>{}
 
 export function Meal() {
+
+  // const [meal, setMeal] = useState<MealRecordInterface>({})
 
   const { data, isLoading }: {
     data: MealInterface[],
     isLoading: boolean
   } = api('refeicoes')
 
+
+  // useEffect(() => {
+
+  // },[])
+
   if (isLoading) {
     return <SkeletonText noOfLines={3} gap="4" />
   }
+
+  // const meal = data.reduce(acc, value => {
+
+  // }, {}) as MealRecordInterface
 
   return (
     <Stack
