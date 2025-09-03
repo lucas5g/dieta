@@ -23,30 +23,19 @@ export function Meal() {
 
   // const [meal, setMeal] = useState<MealRecordInterface>({})
 
-  const { data, isLoading }: {
-    data: MealInterface[],
-    isLoading: boolean
-  } = api('refeicoes')
+  const { data, isLoading } = api('meals')
 
-
-  // useEffect(() => {
-
-  // },[])
 
   if (isLoading) {
     return <SkeletonText noOfLines={3} gap="4" />
   }
-
-  // const meal = data.reduce(acc, value => {
-
-  // }, {}) as MealRecordInterface
 
   return (
     <Stack
       gap={5}
       width={'100%'}
     >
-      <MealCard
+      {/* <MealCard
         name={'café da manhã'}
         meals={data}
 
@@ -64,7 +53,7 @@ export function Meal() {
       <MealCard
         name={'jantar'}
         meals={data}
-      />
+      /> */}
     
       {/* <Float 
         

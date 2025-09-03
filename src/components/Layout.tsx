@@ -14,7 +14,7 @@ export function Layout() {
     >
       <Navbar />
       <Flex
-        padding={10}
+        padding={5}
         >
         <Outlet />
       </Flex>

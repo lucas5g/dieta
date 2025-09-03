@@ -3,40 +3,41 @@ import { api } from "@/utils/api";
 import {
   Button,
   Card,
-  createListCollection,
-  Dialog, Field,
+  Field,
   Flex,
   NativeSelect,
-  Portal, Select, Separator, SkeletonText, Stack,
+  Separator, SkeletonText, Stack,
 
 } from "@chakra-ui/react";
-import { Plus } from "lucide-react";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "./Input";
-import type { Meal, MealInterface } from "@/pages/Meal";
+import type { MealInterface } from "@/pages/Meal";
 
 interface MealFormInterface extends Omit<MealInterface, 'row_number'> {
 
 }
 export function MealForm() {
 
-  const [Alimento, setAlimento] = useState<FoodInterface>()
-  const [Refeição, setRefeição] = useState<string>()
-  const [Quantidade, setQuantidade] = useState<number>(0)
-  const [Calorias, setCalorias] = useState<number>(0)
-  const [Proteínas, setProteínas] = useState<number>(0)
-  const [Gorduras, setGorduras] = useState<number>(0)
-  const [Carboidratos, setCarboidratos] = useState<number>(0)
+  const [food, setFood] = useState<FoodInterface>()
+  const [meal, setMeal] = useState<string>()
+  const [quantity, setQuantity] = useState<number>(0)
+  const [calorie, setCalorie] = useState<number>(0)
+  const [protein, setProtein] = useState<number>(0)
+  const [fat, setFat] = useState<number>(0)
+  const [carbo, setCarbo] = useState<number>(0)
 
   useEffect(() => {
 
-    console.log('alimento => ', Alimento)
-    setProteínas((Quantidade * (Alimento?.Proteínas || 0)).toFixed(2))
-    setGorduras(Quantidade * (Alimento?.Gorduras || 0))
-    setCarboidratos(Quantidade * (Alimento?.Carboidratos || 0))
+    const proteinUpdate = (quantity * (food?.protein || 0))
+    const fatUpdate = quantity * (food?.fat || 0)
+    const carboUpdate = quantity * (food?.carbo || 0)
+    const calorieUpdate = quantity * (food?.calorie || 0)
 
-    setCalorias(Quantidade * (Alimento?.Calorias || 0))
-  }, [Alimento, Quantidade])
+    setProtein(proteinUpdate.toFixed(2))
+    setFat((quantity * (food?.fat || 0)).toFixed(2))
+    setCarbo(quantity * (food?.carbo || 0))
+    setCalorie(quantity * (food?.calorie || 0))
+  }, [food, quantity])
 
   return (
     <Card.Root>
@@ -46,19 +47,19 @@ export function MealForm() {
       <Card.Body>
         <Stack gap={4}>
           <SelectMeal
-            Refeição={Refeição || ''}
-            setRefeição={setRefeição}
+            meal={meal || ''}
+            setMeal={setMeal}
           />
           <SelectFood
-            Alimento={Alimento}
-            setAlimento={setAlimento}
+            food={food}
+            setFood={setFood}
           />
           <Input
             placeholder="Quantidade"
             type="number"
             max={100}
-            onChange={(e) => setQuantidade(Number(e.target.value))}
-            value={Quantidade}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            value={quantity}
           />
           <Separator />
           <Input
@@ -66,38 +67,36 @@ export function MealForm() {
             placeholder='Proteínas'
             disabled
             type="number"
-            value={Proteínas}
+            value={protein}
           />
           <Input
-
             placeholder='Carboidratos'
             disabled
             type="number"
-            value={Carboidratos}
+            value={carbo}
           />
           <Input
-
             placeholder='Gorduras'
             disabled
             type="number"
-            value={Gorduras}
+            value={fat}
           />
           <Input
-
             placeholder='Calorias'
             disabled
             type="number"
-            value={Calorias}
+            value={calorie}
           />
-
+          {/*
+            
           <Flex
             justifyContent={'end'}
             gap={4}
           >
-            <Button variant={'outline'}>
+            <Button variant={'solid'}>
               Cancelar
             </Button>
-            <Button variant={'solid'}>
+            <Button variant={'outline'}>
               Salvar
             </Button>
           </Flex>
@@ -119,16 +118,12 @@ export function MealForm() {
   )
 }
 function SelectFood(props: Readonly<{
-  Alimento: FoodInterface | undefined,
-  setAlimento: (value: FoodInterface) => void
+  food: FoodInterface | undefined,
+  setFood: (FoodInterface: any) => void
 }>) {
 
-  const { data, isLoading } = api('alimentos')
-  const [foods, setFoods] = useState<FoodInterface[]>()
-
-  useEffect(() => {
-    setFoods(data)
-  }, [data])
+  const { data, isLoading } = api('foods')
+  
 
   if (isLoading) {
     return <SkeletonText noOfLines={2} />
@@ -141,16 +136,19 @@ function SelectFood(props: Readonly<{
       </Field.Label>
       <NativeSelect.Root>
         <NativeSelect.Field
-          value={props.Alimento?.Nome}
-          onChange={(e) => props.setAlimento(foods?.find(food => food.Nome === e.target.value) || {})}
+          value={props.food?.name|| ''}
+          onChange={(e) => {
+            const foodFind = data?.find((food: FoodInterface) => food.name === e.target.value)
+            props.setFood(foodFind)
+          }}
           placeholder="Selecione um alimento"
         >
           {
-            foods?.map(food => (
+            data?.map((food: FoodInterface) => (
               <option
-                key={food['Nº']}
-                value={food.Nome}>
-                {food.Nome}
+                key={food.row_number}
+                value={food.name}>
+                {food.name}
               </option>
             ))
           }
@@ -161,8 +159,8 @@ function SelectFood(props: Readonly<{
 }
 
 function SelectMeal(props: Readonly<{
-  Refeição: string,
-  setRefeição: (value: string) => void
+  meal: string,
+  setMeal: (value: string) => void
 }>) {
   const meals = [
     {
@@ -188,13 +186,15 @@ function SelectMeal(props: Readonly<{
       <Field.Label>Refeição</Field.Label>
       <NativeSelect.Root>
         <NativeSelect.Field
-          value={props.Refeição}
-          onChange={(e) => props.setRefeição(e.target?.value || '')}
+          value={props.meal}
+          onChange={(e) => props.setMeal(e.target?.value || '')}
+          cursor={'pointer'}
         >
           {meals.map((meal) => (
             <option
               key={meal.value}
               value={meal.label}
+              style={{ cursor: 'pointer' }}
             >
               {meal.label}
             </option>
