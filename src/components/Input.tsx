@@ -8,7 +8,10 @@ export function Input(props: Props) {
       <Field.Label>
         {props.placeholder}
       </Field.Label>
-      <ChakraInput {...props} />
+      <ChakraInput
+        {...props}
+        required
+        />
     </Field.Root>
   )
 }

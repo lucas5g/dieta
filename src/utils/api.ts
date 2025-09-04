@@ -1,8 +1,8 @@
 import axios from 'axios'
 import useSWR from 'swr'
 
-const axiosCreate = axios.create({
-  baseURL: 'https://n8n.dizelequefez.com.br/webhook'
+export const axiosCreate = axios.create({
+  baseURL: 'https://n8n.dizelequefez.com.br/webhook-test'
 })
 
 

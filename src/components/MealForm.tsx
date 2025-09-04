@@ -1,11 +1,12 @@
 import type { FoodInterface } from "@/pages/Food";
-import { api } from "@/utils/api";
+import { api, axiosCreate } from "@/utils/api";
 import {
   Button,
   Card,
   Field,
   Flex,
   NativeSelect,
+  Select,
   Separator, SkeletonText, Stack,
 
 } from "@chakra-ui/react";
@@ -19,7 +20,7 @@ interface MealFormInterface extends Omit<MealInterface, 'row_number'> {
 export function MealForm() {
 
   const [food, setFood] = useState<FoodInterface>()
-  const [meal, setMeal] = useState<string>()
+  const [meal, setMeal] = useState<string>('café da manhã')
   const [quantity, setQuantity] = useState<number>(0)
   const [calorie, setCalorie] = useState<number>(0)
   const [protein, setProtein] = useState<number>(0)
@@ -28,16 +29,40 @@ export function MealForm() {
 
   useEffect(() => {
 
-    const proteinUpdate = (quantity * (food?.protein || 0))
-    const fatUpdate = quantity * (food?.fat || 0)
-    const carboUpdate = quantity * (food?.carbo || 0)
-    const calorieUpdate = quantity * (food?.calorie || 0)
+    if (!food) {
+      return
+    }
 
-    setProtein(proteinUpdate.toFixed(2))
-    setFat((quantity * (food?.fat || 0)).toFixed(2))
-    setCarbo(quantity * (food?.carbo || 0))
-    setCalorie(quantity * (food?.calorie || 0))
+
+    setProtein(macroToFixed(food.protein))
+    setFat(macroToFixed(food.fat))
+    setCarbo(macroToFixed(food.carbo))
+    setCalorie(macroToFixed(food.calorie))
+
   }, [food, quantity])
+
+  function macroToFixed(macro: number) {
+    return Number((quantity * macro).toFixed(2))
+  }
+
+  async function handleMeal(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    if(!food){
+      alert('Selecione um alimento')
+    }
+
+    const { data } = await axiosCreate.post('/meals', {
+      meal,
+      food: food?.name,
+      quantity
+    })
+
+    console.log(data)
+    // console.log({ food, meal, quantity, calorie, protein, fat, carbo })
+  }
+
+
 
   return (
     <Card.Root>
@@ -45,74 +70,71 @@ export function MealForm() {
         <Card.Title>Adicionar refeição</Card.Title>
       </Card.Header>
       <Card.Body>
-        <Stack gap={4}>
-          <SelectMeal
-            meal={meal || ''}
-            setMeal={setMeal}
-          />
-          <SelectFood
-            food={food}
-            setFood={setFood}
-          />
-          <Input
-            placeholder="Quantidade"
-            type="number"
-            max={100}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            value={quantity}
-          />
-          <Separator />
-          <Input
+        <form onSubmit={handleMeal}>
 
-            placeholder='Proteínas'
-            disabled
-            type="number"
-            value={protein}
-          />
-          <Input
-            placeholder='Carboidratos'
-            disabled
-            type="number"
-            value={carbo}
-          />
-          <Input
-            placeholder='Gorduras'
-            disabled
-            type="number"
-            value={fat}
-          />
-          <Input
-            placeholder='Calorias'
-            disabled
-            type="number"
-            value={calorie}
-          />
-          {/*
+          <Stack gap={4}>
             
-          <Flex
-            justifyContent={'end'}
-            gap={4}
-          >
-            <Button variant={'solid'}>
-              Cancelar
-            </Button>
-            <Button variant={'outline'}>
-              Salvar
-            </Button>
-          </Flex>
-          {/* <pre>
-            {JSON.stringify({
-              Alimento,
-              Refeição,
-              Quantidade,
-              Calorias,
-              Proteínas,
-              Gorduras,
-              Carboidratos
-            }, null, 2)}
-          </pre> */}
-        </Stack>
+            <SelectMeal
+              meal={meal || ''}
+              setMeal={setMeal}
+            />
+            <SelectFood
+              food={food}
+              setFood={setFood}
+            />
+            <Input
+              placeholder="Quantidade"
+              type="number"
+              max={100}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              value={quantity}
+            />
+            <Separator />
+            <Input
 
+              placeholder='Proteínas'
+              disabled
+              type="number"
+              value={protein}
+            />
+            <Input
+              placeholder='Carboidratos'
+              disabled
+              type="number"
+              value={carbo}
+            />
+            <Input
+              placeholder='Gorduras'
+              disabled
+              type="number"
+              value={fat}
+            />
+            <Input
+              placeholder='Calorias'
+              disabled
+              type="number"
+              value={calorie}
+            />
+
+            <Flex
+              justifyContent={'end'}
+              gap={4}
+            >
+              <Button 
+                variant={'solid'}
+                type="reset"
+                >
+                Cancelar
+              </Button>
+              <Button 
+                variant={'outline'}
+                type="submit"
+                >
+                Salvar
+              </Button>
+            </Flex>
+          </Stack>
+        </form>
       </Card.Body>
     </Card.Root>
   )
@@ -123,7 +145,7 @@ function SelectFood(props: Readonly<{
 }>) {
 
   const { data, isLoading } = api('foods')
-  
+
 
   if (isLoading) {
     return <SkeletonText noOfLines={2} />
@@ -134,9 +156,22 @@ function SelectFood(props: Readonly<{
       <Field.Label>
         Alimento
       </Field.Label>
-      <NativeSelect.Root>
+      {/* <Select placeholder="Selecione um alimento">
+        {
+          data?.map((food: FoodInterface) => (
+            <option
+              key={food.row_number}
+              value={food.name}>
+              {food.name}
+            </option>
+          ))
+        }
+      </Select> */}
+      <NativeSelect.Root
+        // _required={true}
+      > 
         <NativeSelect.Field
-          value={props.food?.name|| ''}
+          value={props.food?.name || ''}
           onChange={(e) => {
             const foodFind = data?.find((food: FoodInterface) => food.name === e.target.value)
             props.setFood(foodFind)
@@ -153,6 +188,7 @@ function SelectFood(props: Readonly<{
             ))
           }
         </NativeSelect.Field>
+        <NativeSelect.Indicator />
       </NativeSelect.Root>
     </Field.Root>
   )
@@ -184,11 +220,13 @@ function SelectMeal(props: Readonly<{
   return (
     <Field.Root>
       <Field.Label>Refeição</Field.Label>
-      <NativeSelect.Root>
+      <NativeSelect.Root
+      >
         <NativeSelect.Field
           value={props.meal}
           onChange={(e) => props.setMeal(e.target?.value || '')}
           cursor={'pointer'}
+          // _required={true}
         >
           {meals.map((meal) => (
             <option
